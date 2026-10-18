@@ -1,0 +1,9 @@
+node_modules/
+dist/
+artifacts/
+test-results/
+package-lock.json
+PROJECT_BRIEF.md
+DISCOVERY.md
+SPEC_DRAFT.md
+BUILD_PLAN.md

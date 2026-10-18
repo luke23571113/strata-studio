@@ -1,0 +1,383 @@
+/* Base and full-screen scene */
+:root {
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: #e8ece4;
+  background: #060809;
+  color-scheme: dark;
+  --muted: #98a293;
+  --accent: #c2d3af;
+  --border: #d4dfcd26;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+input,
+select {
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+button,
+select {
+  color: inherit;
+  background: #151d17;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 10px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+button:hover {
+  background: #253026;
+}
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+canvas:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.studio,
+.scene,
+.interface {
+  position: fixed;
+  inset: 0;
+}
+.scene canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+.interface {
+  pointer-events: none;
+}
+/* Empty overlay space stays available for camera gestures. */
+.interface > * {
+  pointer-events: auto;
+}
+
+/* Title, preset and reset */
+.identity {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.identity svg {
+  width: 25px;
+  height: 30px;
+  fill: none;
+  stroke: var(--accent);
+}
+h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.preset-panel {
+  position: absolute;
+  top: 102px;
+  left: 32px;
+  width: 185px;
+}
+.preset-panel label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.preset-panel select {
+  width: 100%;
+}
+.reset-button {
+  position: absolute;
+  left: 32px;
+  bottom: 84px;
+}
+.generate-button {
+  position: absolute;
+  bottom: 32px;
+  left: 32px;
+}
+
+/* World identity and sharing feedback */
+.seed-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.seed-heading button {
+  padding: 7px 10px;
+  font-size: 11px;
+}
+.seed-value {
+  display: block;
+  margin: 14px 0 8px;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  user-select: all;
+}
+a {
+  color: var(--accent);
+}
+.copy-status {
+  min-height: 17px;
+}
+.invalid-world {
+  max-width: 420px;
+  margin: 20vh auto;
+  padding: 24px;
+  line-height: 1.6;
+}
+
+/* Terrain and climate sliders */
+.control-panel {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  width: 260px;
+  max-height: calc(100% - 100px);
+  overflow-y: auto;
+  padding: 24px;
+  background: #0b100dcc;
+  scrollbar-width: thin;
+}
+.control-group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.control-group + .control-group {
+  margin-top: 28px;
+}
+.control-group legend {
+  width: 100%;
+  padding: 0 0 14px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.slider-control + .slider-control {
+  margin-top: 22px;
+}
+.slider-heading,
+.range-labels {
+  display: flex;
+  justify-content: space-between;
+}
+.range-labels {
+  color: var(--muted);
+  font-size: 10px;
+}
+.slider-heading {
+  font-size: 12px;
+}
+.slider-heading output {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+input[type='range'] {
+  display: block;
+  width: 100%;
+  margin: 10px 0 5px;
+  height: 22px;
+  accent-color: var(--accent);
+  cursor: ew-resize;
+  touch-action: pan-y;
+}
+
+/* Mobile controls and graphics fallback */
+.drawer-toggle {
+  display: none;
+}
+.scene-error {
+  position: absolute;
+  top: 45%;
+  left: 30%;
+  width: 40%;
+  padding: 20px;
+  background: #131b17;
+  line-height: 1.6;
+}
+
+/* On narrow screens, keep the presets visible and tuck sliders into a drawer. */
+@media (max-width: 900px) {
+  .identity {
+    top: 24px;
+    left: 24px;
+  }
+  h1 {
+    font-size: 17px;
+  }
+  .preset-panel {
+    top: 82px;
+    left: 24px;
+    width: 175px;
+  }
+  .preset-panel label {
+    display: inline;
+    margin-right: 10px;
+  }
+  .preset-panel select {
+    width: 115px;
+    padding: 7px;
+  }
+  .reset-button {
+    top: 24px;
+    right: 24px;
+    bottom: auto;
+    left: auto;
+    font-size: 11px;
+  }
+  .control-panel {
+    display: none;
+    top: auto;
+    bottom: 136px;
+    left: 14px;
+    right: 14px;
+    width: auto;
+    max-height: 35%;
+    padding: 20px;
+  }
+  .drawer-open .control-panel {
+    display: block;
+  }
+  .drawer-toggle {
+    display: block;
+    position: absolute;
+    bottom: max(22px, env(safe-area-inset-bottom));
+    left: 24px;
+    right: 24px;
+    padding: 14px;
+  }
+  .generate-button {
+    bottom: 82px;
+    left: 24px;
+    right: 24px;
+    padding: 12px;
+  }
+  .scene-error {
+    top: 30%;
+    left: 24px;
+    width: calc(100% - 48px);
+    font-size: 13px;
+  }
+}
+
+/* Compact world tools sit opposite the terrain controls on desktop. */
+.world-description,
+.control-description,
+.copy-status,
+.import-error {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+.world-description {
+  margin: 12px 0 8px;
+}
+.modified-state {
+  color: var(--accent);
+  font-size: 11px;
+}
+.control-description {
+  margin: 8px 0 0;
+}
+.reset-sliders {
+  margin-top: 24px;
+  width: 100%;
+}
+.share-panel {
+  position: fixed;
+  left: 32px;
+  top: 245px;
+  width: 210px;
+  max-height: calc(100% - 390px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  font-size: 12px;
+}
+summary {
+  cursor: pointer;
+  padding: 12px 0;
+}
+summary:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.share-panel > details > summary {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+.share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+.share-actions button {
+  flex: 1;
+  font-size: 11px;
+  min-height: 44px;
+}
+.import-panel {
+  border-top: 1px solid var(--border);
+}
+.import-panel label,
+.copy-fallback {
+  display: block;
+  font-size: 11px;
+  line-height: 1.5;
+}
+textarea {
+  width: 100%;
+  min-height: 76px;
+  margin: 8px 0;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: #101812;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  resize: vertical;
+}
+.import-error {
+  color: #edbea5;
+}
+.scene-loading {
+  position: absolute;
+  top: 45%;
+  width: 100%;
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .world-description {
+    display: none;
+  }
+  .modified-state {
+    display: block;
+    margin-top: 8px;
+  }
+  .share-panel {
+    position: static;
+    width: auto;
+    max-height: none;
+    overflow: visible;
+    margin-top: 24px;
+  }
+  .share-panel button,
+  .reset-sliders,
+  .import-panel summary {
+    min-height: 44px;
+  }
+}
